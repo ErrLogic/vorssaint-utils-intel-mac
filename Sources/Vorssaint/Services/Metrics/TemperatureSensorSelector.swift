@@ -140,7 +140,7 @@ enum TemperatureSensorSelector {
         case .appleM5Family:
             return appleM5CPUCoreKeys.contains(key)
         case .intel:
-            return IntelSMCSensorMap.cpuCoreKeys.contains(key)
+            return IntelSMCSensorMap.preferredKeys.contains(key)
         case .unmappedAppleSilicon, .generic:
             return false
         }

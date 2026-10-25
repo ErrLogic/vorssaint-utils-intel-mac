@@ -125,8 +125,9 @@ Exit criteria: CPU temperature tracks `sudo powermetrics --samplers smc -n 1` wi
 **Outcome (MacBookAir7,2).** The keys were matched against Macs Fan Control instead of `powermetrics`
 (which needs sudo): the SMC dump and a screenshot of its window were taken within a few seconds of each
 other, idle and under a 4-process CPU load (evidence in `docs/intel-port/mfc-crosscheck/`).
-Mapped: cores `TC1C`, `TC2C`; package `TCMX` ("CPU PECI"); GPU `TCGC`. Left out because no single label
-matched them: `TC0E`, `TC0F`, `TCXC`, `TCSA`, `TCHP`. `TC0P` is "CPU Proximity", not a die sensor.
+Mapped: die `TC0F` (equals `powermetrics` "CPU die temperature" to two decimals, idle and load; leads the
+display); cores `TC1C`, `TC2C`; package `TCMX` ("CPU PECI"); GPU `TCGC`. Left out because no single label
+matched them: `TC0E`, `TCXC`, `TCSA`, `TCHP`. `TC0P` is "CPU Proximity", not a die sensor.
 `Vorssaint --sensors` classifies the mapped keys as `cpu-core`, `cpu-aux` and `gpu`.
 
 ### Phase 3 — Performance defaults for Broadwell

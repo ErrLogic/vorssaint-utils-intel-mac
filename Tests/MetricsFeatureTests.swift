@@ -669,7 +669,7 @@ enum MetricsFeatureTests {
         let intelCPU = intelSensors.filter {
             TemperatureSensorSelector.isCPUTemperatureKey($0.key, platform: intelPlatform)
         }
-        suite.expect(intelCPU.map(\.key) == ["TC1C", "TC2C", "TCMX"],
+        suite.expect(intelCPU.map(\.key) == ["TC0F", "TC1C", "TC2C", "TCMX"],
                "Intel CPU discovery keeps only the sensors matched to a CPU label")
         suite.expect(intelSensors.filter {
             TemperatureSensorSelector.isGPUTemperatureKey($0.key, platform: intelPlatform)
@@ -681,13 +681,16 @@ enum MetricsFeatureTests {
                 && !TemperatureSensorSelector.isGPUTemperatureKey("TCGC", platform: .appleM1Family),
                "Apple Silicon keeps its Tg GPU sensors")
         suite.expectClose(TemperatureSensorSelector.displayedCPUTemperature(
-            readings: intelCPU, platform: intelPlatform) ?? -1, 74.0,
-            "Intel CPU temperature is the hottest core")
+            readings: intelCPU, platform: intelPlatform) ?? -1, 79.586,
+            "Intel CPU temperature is the die temperature powermetrics reports")
+        suite.expectClose(TemperatureSensorSelector.displayedCPUTemperature(
+            readings: intelCPU.filter { $0.key != "TC0F" }, platform: intelPlatform) ?? -1, 74.0,
+            "Intel CPU temperature falls back to the hottest core")
         suite.expectClose(TemperatureSensorSelector.displayedCPUTemperature(
             readings: intelCPU.filter { $0.key == "TCMX" }, platform: intelPlatform) ?? -1, 74.688,
             "Intel CPU temperature falls back to the package reading")
         suite.expect(TemperatureSensorSelector.displayedCPUTemperature(
-            readings: intelSensors.filter { !["TC1C", "TC2C", "TCMX"].contains($0.key) },
+            readings: intelSensors.filter { !["TC0F", "TC1C", "TC2C", "TCMX"].contains($0.key) },
             platform: intelPlatform) == nil,
                "Intel CPU temperature shows nothing rather than another sensor when its own are silent")
         suite.expect(TemperatureSensorSelector.isCPUTemperatureKey("Tf4E", platform: .appleM3Family)

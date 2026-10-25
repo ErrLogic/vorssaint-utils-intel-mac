@@ -1,0 +1,24 @@
+# `sudo powermetrics --samplers smc -n 1 -i 1000` taken in the same second as an SMC dump
+# (MacBookAir7,2, 2026-10-25). "CPU die temperature" matches TC0F in both states.
+
+## desktop idle
+F0Ac  fpe2  2     267c                2463.000
+TC0E  sp78  2     43d0                67.812
+TC0F  sp78  2     4615                70.082
+TC1C  sp78  2     4000                64.000
+TC2C  sp78  2     3f00                63.000
+TCMX  sp78  2     41ec                65.922
+TCXC  sp78  2     41ec                65.922
+Fan: 2447 rpm
+CPU die temperature: 70.08 C
+
+## 4x yes, 60 s
+F0Ac  fpe2  2     4214                4229.000
+TC0E  sp78  2     6267                98.402
+TC0F  sp78  2     64b2                100.695
+TC1C  sp78  2     6200                98.000
+TC2C  sp78  2     6100                97.000
+TCMX  sp78  2     6238                98.219
+TCXC  sp78  2     6238                98.219
+Fan: 4229 rpm
+CPU die temperature: 100.70 C
