@@ -72,9 +72,9 @@ together, idle and under load.
 |---|---|---|---|
 | 3.1 | CPU temperature (panel / menu bar) | Equals powermetrics "CPU die temperature" (TC0F) within 1 °C | PASS (2026-10-25): panel 78 °C vs TC0F 78.1 in the same second (`qa/panel-system-tab.png`); powermetrics match shown in Phase 2 |
 | 3.2 | CPU per-core list | Two cores, no P/E grouping | |
-| 3.3 | GPU temperature | Tracks MFC "GPU Intel HD Graphics 6000" (TCGC) | PASS (2026-10-25): panel 71 °C vs TCGC 71.0 in the same second |
-| 3.4 | Battery temperature | Matches MFC "Battery Max" | |
-| 3.5 | Fan speed readout | Matches MFC fan RPM; read-only | |
+| 3.3 | GPU temperature | Tracks MFC "GPU Intel HD Graphics 6000" (TCGC) | PASS (2026-10-25): panel 71 °C vs TCGC 71.0 in the same second; MFC "GPU Intel HD Graphics 6000" 75.0 vs TCGC 75.0 in a second capture (`qa/mfc-release-run.png`) |
+| 3.4 | Battery temperature | Matches MFC "Battery Max" | PARTIAL (2026-10-25): the keys the app reads match MFC (TBXT 37.6 = Battery Max, TB2T 34.6 = Sensor 2, `qa/mfc-release-run-dump.txt`); the app's own battery readout is not seen yet (power tab) |
+| 3.5 | Fan speed readout | Matches MFC fan RPM; read-only | PARTIAL (2026-10-25): SMC F0Ac 1406 vs MFC 1413 rpm a second or two apart; the app's own readout is not seen yet |
 | 3.6 | Battery: charge %, health, charging sign | Charge/discharge sign is right (T6); health is plausible | |
 | 3.7 | System / adapter power | Shows a value or hides cleanly (PSTR/PDTR, T7) | |
 | 3.8 | GPU usage % | Shows a value or hides cleanly (T5, IOAccelerator "Device Utilization %") | PASS (2026-10-25): the HD 6000 driver under OCLP publishes it; panel shows GPU 2 % |
