@@ -31,13 +31,13 @@ rebuilds under this identity.
 | # | Check | How | Result |
 |---|---|---|---|
 | 1.1 | No network call to GitHub | Launch, wait 2 min (the first update check was due at 6 s, then hourly): `nettop -p $PID -L 1 -s 1 -m tcp -x` and `lsof -nP -i -a -p $PID`. Expect no connection to `api.github.com` / `github.com`. For a stricter run, watch with LuLu or Little Snitch. | PASS (2026-10-25): `nettop -p $PID -L 100 -s 1 -x` from the first second of launch for 100 s recorded no connection row at all; `lsof -i` empty. Positive control: the same capture on a `curl` to localhost lists its process and TCP row. Auto-check was at its default (on). |
-| 1.2 | Updates page explains itself | Settings → Updates shows the "Updates are turned off in this Intel build…" note, no toggles, no Check Now button. | |
+| 1.2 | Updates page explains itself | Settings → Updates shows the "Updates are turned off in this Intel build…" note, no toggles, no Check Now button. | PASS (2026-10-25, observed by the tester) |
 | 1.3 | Menu "Check for updates…" | Opens Settings, makes no request (repeat 1.1). | |
-| 1.4 | Fan Control greyed | Settings → Features: row disabled, reason "Fan control is not supported on Intel Macs…". | |
-| 1.5 | Extra Brightness greyed | Same, reason "Extra Brightness needs XDR display headroom…". On a clean first run it must not be installed. | |
-| 1.6 | First-run picker | Reset onboarding (`defaults delete com.vorssaint.utils`), relaunch: the picker refuses Fan Control and Extra Brightness with a tooltip; presets Essential, Windows, Battery never install them. | |
+| 1.4 | Fan Control greyed | Settings → Features: row disabled, reason "Fan control is not supported on Intel Macs…". | PASS (2026-10-25, observed by the tester) |
+| 1.5 | Extra Brightness greyed | Same, reason "Extra Brightness needs XDR display headroom…". On a clean first run it must not be installed. | PASS (2026-10-25, observed by the tester; `featureAvailable.extraBrightness` = 0) |
+| 1.6 | First-run picker | Reset onboarding (`defaults delete com.vorssaint.utils`), relaunch: the picker refuses Fan Control and Extra Brightness with a tooltip; presets Essential, Windows, Battery never install them. | PASS for the Essential preset (2026-10-25): the installed set is keepAwake, mixer and the six monitors; `featureAvailable.fanControl` = 0. Windows and Battery presets not tried. |
 | 1.7 | Install-all | Hub "install all": both stay uninstalled, counter reaches its maximum without hanging one short. | |
-| 1.8 | No fan helper | `launchctl list \| grep -i vorssaint` shows no fan-control helper; no admin prompt appeared. | |
+| 1.8 | No fan helper | `launchctl list \| grep -i vorssaint` shows no fan-control helper; no admin prompt appeared. | PASS (2026-10-25): the only `launchctl` entry is the app itself; no admin prompt. |
 
 ## 2. Resource use
 
@@ -53,7 +53,7 @@ footprint -p $PID
 
 | # | Scenario | CPU % (avg of samples 2–7) | Footprint MB | Result / notes |
 |---|---|---|---|---|
-| 2.1 | Essential preset, no panel open | | | |
+| 2.1 | Essential preset, no panel open | 0.0 (7 samples; CPU time unchanged over 30 s) | 79 (peak 82; RSS 159) | PASS (2026-10-25, release build, 27 min after launch) |
 | 2.2 | Menu panel open, monitor visible | | | |
 | 2.3 | Dynamic Island on, idle | | | |
 | 2.4 | Dynamic Island on, music playing | | | |
@@ -196,7 +196,7 @@ The Air has no notch: the island must still show as a floating capsule. Judge sm
 | 5.1 | Launch at login works; relaunch after reboot restores state | |
 | 5.2 | Quit: the app leaves nothing running (no helper, no stuck modifiers) | |
 | 5.3 | Uninstall (`Tools/uninstall.sh` or in-app) removes preferences | |
-| 5.4 | No crash logs in `~/Library/Logs/DiagnosticReports` for Vorssaint during the run | |
+| 5.4 | No crash logs in `~/Library/Logs/DiagnosticReports` for Vorssaint during the run | PASS so far (2026-10-25): no Vorssaint report in DiagnosticReports after a 27-minute session. |
 | 5.5 | Sleep/wake and display unplug/replug: windows, island and monitors recover | |
 
 ## 6. Failure handling
