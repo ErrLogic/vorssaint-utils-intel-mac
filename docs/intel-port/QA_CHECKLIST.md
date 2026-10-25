@@ -30,7 +30,7 @@ rebuilds under this identity.
 
 | # | Check | How | Result |
 |---|---|---|---|
-| 1.1 | No network call to GitHub | Launch, wait 2 min (the first update check was due at 6 s, then hourly): `nettop -p $PID -L 1 -s 1 -m tcp -x` and `lsof -nP -i -a -p $PID`. Expect no connection to `api.github.com` / `github.com`. For a stricter run, watch with LuLu or Little Snitch. | |
+| 1.1 | No network call to GitHub | Launch, wait 2 min (the first update check was due at 6 s, then hourly): `nettop -p $PID -L 1 -s 1 -m tcp -x` and `lsof -nP -i -a -p $PID`. Expect no connection to `api.github.com` / `github.com`. For a stricter run, watch with LuLu or Little Snitch. | PASS (2026-10-25): `nettop -p $PID -L 100 -s 1 -x` from the first second of launch for 100 s recorded no connection row at all; `lsof -i` empty. Positive control: the same capture on a `curl` to localhost lists its process and TCP row. Auto-check was at its default (on). |
 | 1.2 | Updates page explains itself | Settings → Updates shows the "Updates are turned off in this Intel build…" note, no toggles, no Check Now button. | |
 | 1.3 | Menu "Check for updates…" | Opens Settings, makes no request (repeat 1.1). | |
 | 1.4 | Fan Control greyed | Settings → Features: row disabled, reason "Fan control is not supported on Intel Macs…". | |
