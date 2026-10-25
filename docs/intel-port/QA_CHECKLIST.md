@@ -54,9 +54,9 @@ footprint -p $PID
 | # | Scenario | CPU % (avg of samples 2–7) | Footprint MB | Result / notes |
 |---|---|---|---|---|
 | 2.1 | Essential preset, no panel open | 0.0 (7 samples; CPU time unchanged over 30 s) | 79 (peak 82; RSS 159) | PASS (2026-10-25, release build, 27 min after launch) |
-| 2.2 | Menu panel open, monitor visible | | | |
-| 2.3 | Dynamic Island on, idle | | | |
-| 2.4 | Dynamic Island on, music playing | | | |
+| 2.2 | Menu panel open, monitor visible | see 2.4 (measured together with 2.3 and 2.4) | 88 | measured combined |
+| 2.3 | Dynamic Island on, idle | see 2.4 | 88 | measured combined; installed island set: calendar, notifications, gestures, timer, accessories, lyrics, queue, live equalizer, downloads, watch |
+| 2.4 | Dynamic Island on, music playing | 3.6 (avg of samples 2–7: 3.2, 3.0, 4.1, 4.2, 2.9, 4.2) | 88 (peak 90) | PASS (2026-10-25): panel open, island on, Spotify playing. System context: WindowServer ~21 %, Spotify ~9 %. WindowServer was already ~25 % before the app was launched, so it is not caused by the island. |
 | 2.5 | Daily set (all you use) | | | |
 | 2.6 | Under CPU load (`yes > /dev/null` × 4, then `pkill yes`): does the app stay responsive? | | | |
 
@@ -70,15 +70,15 @@ together, idle and under load.
 
 | # | Check | Expect | Result |
 |---|---|---|---|
-| 3.1 | CPU temperature (panel / menu bar) | Equals powermetrics "CPU die temperature" (TC0F) within 1 °C | |
+| 3.1 | CPU temperature (panel / menu bar) | Equals powermetrics "CPU die temperature" (TC0F) within 1 °C | PASS (2026-10-25): panel 78 °C vs TC0F 78.1 in the same second (`qa/panel-system-tab.png`); powermetrics match shown in Phase 2 |
 | 3.2 | CPU per-core list | Two cores, no P/E grouping | |
-| 3.3 | GPU temperature | Tracks MFC "GPU Intel HD Graphics 6000" (TCGC) | |
+| 3.3 | GPU temperature | Tracks MFC "GPU Intel HD Graphics 6000" (TCGC) | PASS (2026-10-25): panel 71 °C vs TCGC 71.0 in the same second |
 | 3.4 | Battery temperature | Matches MFC "Battery Max" | |
 | 3.5 | Fan speed readout | Matches MFC fan RPM; read-only | |
 | 3.6 | Battery: charge %, health, charging sign | Charge/discharge sign is right (T6); health is plausible | |
 | 3.7 | System / adapter power | Shows a value or hides cleanly (PSTR/PDTR, T7) | |
-| 3.8 | GPU usage % | Shows a value or hides cleanly (T5, IOAccelerator "Device Utilization %") | |
-| 3.9 | `Vorssaint --sensors` | TC0F/TC1C/TC2C `cpu-core`, TCMX `cpu-aux`, TCGC `gpu` | |
+| 3.8 | GPU usage % | Shows a value or hides cleanly (T5, IOAccelerator "Device Utilization %") | PASS (2026-10-25): the HD 6000 driver under OCLP publishes it; panel shows GPU 2 % |
+| 3.9 | `Vorssaint --sensors` | TC0F/TC1C/TC2C `cpu-core`, TCMX `cpu-aux`, TCGC `gpu` | PASS (2026-10-25, release build) |
 
 ## 4. Features
 
