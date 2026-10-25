@@ -10,10 +10,10 @@ say why). A failing feature is **gated in `hardwareUnsupportedReason`** with a c
 
 | Item | Value |
 |---|---|
-| Commit | `git rev-parse --short HEAD` → |
-| Build time | |
+| Commit | `72390a7d` (`intel-port/phase-4`; no source change after it, only docs) |
+| Build time | release build, x86_64, signed with the local identity |
 | Bundle | `build/stage/Vorssaint.app` |
-| Date / tester | |
+| Date / tester | 2026-10-25 / ErrLogic |
 
 ## 0. Run the build
 
@@ -130,8 +130,8 @@ Install a feature from Settings → Features before testing it.
 
 | Feature | Test | Result |
 |---|---|---|
-| mixer | Per-app volume changes audible; levels move | |
-| soundOutputSwitcher | Switch between speakers and headphones/AirPlay | |
+| mixer | Per-app volume changes audible; levels move | PASS (2026-10-25, user-reported): used by hand on the release build, no problems |
+| soundOutputSwitcher | Switch between speakers and headphones/AirPlay | PASS (2026-10-25, user-reported): per-app output re-routing used by hand, no problems |
 | audioPriority | Priority list reorders outputs | |
 | micMute | Shortcut mutes the mic, indicator updates | |
 | musicBlock | Blocks the Music/Spotify autostart | |
@@ -140,7 +140,7 @@ Install a feature from Settings → Features before testing it.
 
 | Feature | Test | Result |
 |---|---|---|
-| keepAwake | Prevents sleep; timer ends it; lid-close behaviour | |
+| keepAwake | Prevents sleep; timer ends it; lid-close behaviour | PASS (2026-10-25, user-reported): used by hand, no problems |
 | brightness | Brightness keys / slider; software dimming route if used | |
 | extraBrightness | **GATED** (see 1.5) | |
 | bluetoothSleep | Bluetooth off on sleep, back on wake | |
@@ -173,7 +173,7 @@ The Air has no notch: the island must still show as a floating capsule. Judge sm
 
 | Feature | Test | Result |
 |---|---|---|
-| notch `[GFX]` | Appears, expands on hover, animations smooth | |
+| notch `[GFX]` | Appears, expands on hover, animations smooth | PASS (2026-10-25): installed with music playing; 3.6 % CPU (2.4). The owner then used it by hand with no problems |
 | notchCalendar / notchNotifications / notchTimer | Show events, notifications, run a timer | |
 | notchGestures | Gestures open/close | |
 | notchAccessories | Battery/AirPods/charging chips | |
@@ -185,7 +185,7 @@ The Air has no notch: the island must still show as a floating capsule. Judge sm
 
 | Feature | Test | Result |
 |---|---|---|
-| monitorCPU / monitorGPU / monitorMemory / monitorNetwork / monitorDisk / monitorPower | Each panel shows live data; menu bar items render | |
+| monitorCPU / monitorGPU / monitorMemory / monitorNetwork / monitorDisk / monitorPower | Each panel shows live data; menu bar items render | PASS (2026-10-25): System and Power tabs cross-checked against SMC and ioreg (section 3); the owner used all of them by hand with no problems. Network, Disk and Memory were not measured against a second source |
 | connectedDevices | Lists USB devices and peripheral battery | |
 | fanControl | **GATED** (see 1.4) | |
 
@@ -210,11 +210,27 @@ The Air has no notch: the island must still show as a floating capsule. Judge sm
 
 ## 7. Summary
 
+Scope. The owner needs four groups of features: system monitoring, per-app sound re-routing, Keep awake and
+the Dynamic Island. Those were tested on the release build, partly by measurement from the terminal
+(sections 1 to 3) and partly by the owner using them by hand; none showed a problem. The rest of section 4
+was **not tested** and is not needed for this machine. Those rows stay blank on purpose: a blank row means
+"not run", not "passes". Run them before relying on any of those features.
+
 | | Count |
 |---|---|
-| PASS | |
-| FAIL (fixed / gated) | |
+| PASS | 20 rows: 1.1, 1.2, 1.4, 1.5, 1.6 (Essential only), 1.8, 2.1, 2.4, 3.1, 3.3, 3.4, 3.7 to 3.9, 5.4 (so far), and the five feature rows above (2.2 and 2.3 were measured inside 2.4) |
+| PARTIAL | 2 rows: 3.5, 3.6 |
+| FAIL (fixed / gated) | 0 |
 | GATED on purpose | 2 (Fan Control, Extra Brightness) |
-| SKIP | |
+| SKIP | 0 |
+| Not run | 1.3, 1.7, 2.5, 2.6, 3.2, 5.1 to 5.3, 5.5 and every section 4 row not named above |
 
-Idle CPU on Essential: ___ %. Footprint: ___ MB. Open items: ___
+Idle CPU on Essential: 0.0 %. Footprint: 79 MB (88 MB with the panel and island open, 3.6 % CPU with music
+playing). Open items:
+
+- 3.6: the charging sign needs a retest with the battery below about 90 %.
+- 3.5: the fan readout in the app's own panel was not looked at (SMC and MFC agree).
+- Cosmetic, upstream logic: the Battery row reads "On battery 0,0 W" while on AC and full, because the
+  gauge idles at -5 mA and the caption depends only on the sign. Not changed.
+- WindowServer sits at 21 to 25 % on this Mac with or without the app (OCLP graphics), so judge the island's
+  smoothness by eye rather than by that number.

@@ -138,11 +138,20 @@ matched them: `TC0E`, `TCXC`, `TCSA`, `TCHP`. `TC0P` is "CPU Proximity", not a d
 
 ### Phase 4 — On-device QA
 
+**Outcome.** Done for the features the owner needs: system monitoring, per-app sound re-routing, Keep awake
+and the Dynamic Island, on the release build. No failures and nothing needed gating beyond Fan Control and
+Extra Brightness. The optional lowering of monitor sampling defaults (Phase 3 item 3) was not needed:
+0.0 % CPU idle on Essential, 3.6 % with the panel, island and music. The other features were not tested
+and are marked as such in the checklist. Results: `QA_CHECKLIST.md`.
+
 Run the checklist in `docs/intel-port/QA_CHECKLIST.md` (to be written after Phase 0) feature by feature:
 idle CPU % of the app, memory footprint, and pass/fail per feature. Anything failing because of OCLP
 graphics gets gated in `hardwareUnsupportedReason` with a clear reason, not deleted.
 
 ### Phase 5 — Fork identity (optional, required only if the build is ever shared)
+
+Status: not started; the build is for personal use only. Other Intel Macs need their own sensor map first
+(`Tools/smc-dump.sh` plus Macs Fan Control or `powermetrics`).
 
 Per `TRADEMARKS.md`: own app name, bundle ID, icon. Not needed for personal use.
 

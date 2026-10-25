@@ -26,7 +26,7 @@
   <a href="https://github.com/vorssaint/vorssaint-utils/releases"><img src="https://img.shields.io/github/v/release/vorssaint/vorssaint-utils?label=release&color=4c8dff" alt="Latest release"></a>
   <a href="https://github.com/vorssaint/vorssaint-utils/releases"><img src="https://img.shields.io/github/downloads/vorssaint/vorssaint-utils/total?color=4c8dff" alt="Downloads"></a>
   <a href="https://github.com/vorssaint/vorssaint-utils/actions/workflows/ci.yml"><img src="https://github.com/vorssaint/vorssaint-utils/actions/workflows/ci.yml/badge.svg?branch=main&event=push" alt="CI status"></a>
-  <a href="#what-you-need"><img src="https://img.shields.io/badge/macOS-14%2B%20Apple%20Silicon-black" alt="macOS 14 and newer, Apple Silicon"></a>
+  <a href="#what-you-need"><img src="https://img.shields.io/badge/macOS-14%2B%20Apple%20Silicon%20%7C%20Intel%20fork-black" alt="macOS 14 and newer, Apple Silicon or Intel (this fork)"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--or--later-blue" alt="License GPL 3.0 or later"></a>
 </p>
 
@@ -35,6 +35,8 @@
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" width="217" height="60" alt="Buy Me a Coffee">
   </a>
 </p>
+
+> **Intel fork.** This repository is a personal fork of [vorssaint/vorssaint-utils](https://github.com/vorssaint/vorssaint-utils) (fork point `4f510c0`) that builds and runs on an Intel Mac. It is not an official release and is not affiliated with the upstream project. It was ported and checked on one machine, a MacBook Air 2017 (MacBookAir7,2, Intel Core i5-5350U, macOS 15.8.1 through OpenCore Legacy Patcher). See [Intel Mac status](#intel-mac-status) for what works, what is turned off and what has not been tested.
 
 <p align="center">
   For anything private, email
@@ -79,7 +81,7 @@ Reorder or hide panel sections, choose a compact layout, and export settings to 
 ### Know what your Mac is doing
 
 - **System monitor.** CPU, GPU, memory, temperatures, battery health and power use, with history graphs and a view of energy-hungry apps.
-- **Fan Control (beta).** Set manual fan speeds or temperature curves and monitor live RPM.
+- **Fan Control (beta).** Set manual fan speeds or temperature curves and monitor live RPM. Apple Silicon only: turned off on Intel, where RPM stays read-only.
 - **Menu bar readouts.** Put your chosen readings, usage bars, battery time or fan speed directly in the menu bar.
 - **Network.** See live traffic, session totals and your local IP address, or run a speed test.
 - **Alerts.** Get notified about sustained CPU load, high temperatures, memory pressure, low disk space or low battery.
@@ -165,38 +167,34 @@ Reorder or hide panel sections, choose a compact layout, and export settings to 
 
 - **Keep awake.** Keep your Mac working on a timer, with the lid closed, or while selected apps, power or external displays are present.
 - **Displays.** Control individual displays and brightness, with hardware control where supported, half or quarter steps for the brightness keys, optional extra dimming below a monitor's minimum, and software dimming as a fallback.
-- **Extra brightness.** Use a MacBook Pro XDR display's HDR headroom to go beyond its normal maximum brightness.
+- **Extra brightness.** Use a MacBook Pro XDR display's HDR headroom to go beyond its normal maximum brightness. Not available on Intel Macs.
 - **Bluetooth on sleep.** Disconnect Bluetooth during sleep and restore it on wake only if Vorssaint turned it off.
 
 ## Install
 
-With [Homebrew](https://brew.sh):
+**On an Intel Mac, build this fork from source** (see [Build it yourself](#build-it-yourself)). The Homebrew cask and the disk images on the upstream [releases page](https://github.com/vorssaint/vorssaint-utils/releases) are Apple Silicon only and do not run on Intel.
+
+On Apple Silicon, upstream installs with [Homebrew](https://brew.sh):
 
 ```sh
 brew install --cask vorssaint
 ```
 
-Or grab the disk image from the [releases page](https://github.com/vorssaint/vorssaint-utils/releases) and drag Vorssaint into Applications.
-
-Builds are signed with an Apple Developer ID and notarized, so macOS opens them without a fuss and your permissions survive updates.
+or from its disk image. Those builds are signed with an Apple Developer ID and notarized. A build made from this fork is signed with a local self-signed identity, so macOS may ask for your keychain password once, and Accessibility and Screen Recording grants stay valid across rebuilds made with the same identity.
 
 ## Uninstall
 
-With Homebrew:
-
-```sh
-brew uninstall --cask vorssaint
-```
-
-To remove Vorssaint completely, including its settings and permissions:
+Remove the app and everything it stored, including its settings and permissions:
 
 ```sh
 ./Tools/uninstall.sh
 ```
 
+(`brew uninstall --cask vorssaint` only applies to the upstream Apple Silicon cask.)
+
 ## Private by default
 
-Vorssaint is local-first, with no account, analytics or tracking. The network is touched only by things you can see: update checks, the speed test, Homebrew actions, optional online lyric lookup, temporary screenshot or recording links and feedback you explicitly send. The full story is in the [privacy notes](docs/PRIVACY.md).
+Vorssaint is local-first, with no account, analytics or tracking. The network is touched only by things you can see: update checks (off in the Intel build), the speed test, Homebrew actions, optional online lyric lookup, temporary screenshot or recording links and feedback you explicitly send. The full story is in the [privacy notes](docs/PRIVACY.md).
 
 Permissions get the same treatment. Every one is optional, the app explains each in plain words, shows which features actually use it, and even tells you when a permission you granted is no longer needed by anything, with a shortcut to revoke it.
 
@@ -208,19 +206,45 @@ See the [permissions guide](docs/PERMISSIONS.md) for which features need access 
 
 ## What you need
 
-- A Mac with Apple Silicon
+- An Apple Silicon Mac, or an Intel Mac with this fork (`x86_64`)
 - macOS 14 Sonoma or newer
 
 ### Build it yourself
 
 ```sh
-git clone https://github.com/vorssaint/vorssaint-utils.git
-cd vorssaint-utils
-./build.sh --dev            # build the separate Developer variant
-./build.sh --dev --install  # install and launch it
+git clone https://github.com/ErrLogic/vorssaint-utils-intel-mac.git
+cd vorssaint-utils-intel-mac
+./build.sh                  # release build for this Mac, in build/stage/Vorssaint.app
+./build.sh --dev            # or the separate Developer variant
+./build.sh --dev --install  # install and launch the Developer variant
 ```
 
-Xcode Command Line Tools are the only requirement. The [contributing guide](CONTRIBUTING.md) covers the layout and conventions. Official builds come only from the maintainer: the GPL covers the source, while the Vorssaint name, icon and look are covered by [TRADEMARKS.md](TRADEMARKS.md), so forks need their own identity.
+`build.sh` targets the architecture of the machine it runs on. Set `VORSSAINT_ARCH=arm64` or `VORSSAINT_ARCH=x86_64` to override it. Expect a long first build on a small Intel machine: about 20 minutes for a release build and 14 for the Developer variant on the i5-5350U, then roughly 1.5 minutes for an incremental Developer build. Xcode Command Line Tools are the only requirement. The [contributing guide](CONTRIBUTING.md) covers the layout and conventions. Official builds come only from the maintainer: the GPL covers the source, while the Vorssaint name, icon and look are covered by [TRADEMARKS.md](TRADEMARKS.md), so forks need their own identity.
+
+## Intel Mac status
+
+What this fork changes for Intel, and what that was checked against. The full record is in [`docs/intel-port/`](docs/intel-port/).
+
+**Turned off on purpose** (greyed out in Settings → Features with the reason shown, never deleted):
+
+- **Fan Control.** The fan write path is only built and tested for Apple Silicon, and the Intel build never writes to the SMC. Fan speed is still *read* and shown.
+- **Extra Brightness.** It needs XDR display headroom, which an Intel Mac does not have.
+- **Self-updater.** The official releases are Apple Silicon only, so an Intel build never checks for, downloads or installs an update, and makes no request to the GitHub releases API. To update, pull the fork and run `./build.sh` again.
+
+**Adjusted for Intel:**
+
+- **Temperatures.** The CPU reading follows the SMC die sensor, then the cores, then the package, and shows nothing rather than a wrong number. The key map was matched against `powermetrics` and Macs Fan Control on the MacBookAir7,2 (`TC0F`, `TC1C`/`TC2C`, `TCMX`, GPU `TCGC`).
+- **Recorder.** It records in H.264 and skips the HEVC probe, because Broadwell has no HEVC hardware encoder. Media tools already default to H.264.
+
+**Checked on the MacBook Air 2017** (release build, `intel-port/phase-4`): system monitoring (CPU, GPU, battery and system temperatures, power, fan RPM and battery readings cross-checked against the SMC and `ioreg`), the volume mixer with per-app output re-routing, Keep awake and the Dynamic Island with music playing. The app idled at 0.0 % CPU and 79 MB with the Essential preset, 3.6 % CPU and 88 MB with the panel open, the island on and music playing, and made no network connection in a 100 second capture.
+
+**Not tested.** Every other feature (window switcher, Dock Preview, screenshots and recording, Command Bar, Clipboard and so on) was not run on Intel, so it may or may not work, especially anything that leans on graphics under OpenCore Legacy Patcher. [`QA_CHECKLIST.md`](docs/intel-port/QA_CHECKLIST.md) lists every row and its result. A blank row means "not run".
+
+**Known cosmetic quirk.** With the charger connected and the battery full, the Battery row can read "On battery 0,0 W", because this battery's gauge idles at -5 mA and the caption depends only on the sign. The charging-current sign on this battery has not been retested below about 90 % charge.
+
+**Other Intel Macs.** Only the MacBookAir7,2 sensor map exists. Other models may expose different SMC keys, so temperature readings there are unverified. `Tools/smc-dump.sh` dumps the keys of your machine.
+
+**Identity.** The fork still carries the upstream name, bundle ID and icon, which is fine for personal use. Per [TRADEMARKS.md](TRADEMARKS.md) it needs its own before the build is shared.
 
 ## When something misbehaves
 
@@ -228,6 +252,7 @@ See [troubleshooting](docs/TROUBLESHOOTING.md) for launch problems, permissions 
 
 ## Documentation
 
+- [Intel port plan](docs/intel-port/INTEL_PORT_PLAN.md) and [QA checklist](docs/intel-port/QA_CHECKLIST.md), what was changed for Intel and how it was verified
 - [Privacy](docs/PRIVACY.md), what does and does not leave your Mac
 - [Permissions](docs/PERMISSIONS.md), every macOS permission in plain words
 - [Troubleshooting](docs/TROUBLESHOOTING.md), the common fixes
