@@ -73,10 +73,10 @@ together, idle and under load.
 | 3.1 | CPU temperature (panel / menu bar) | Equals powermetrics "CPU die temperature" (TC0F) within 1 °C | PASS (2026-10-25): panel 78 °C vs TC0F 78.1 in the same second (`qa/panel-system-tab.png`); powermetrics match shown in Phase 2 |
 | 3.2 | CPU per-core list | Two cores, no P/E grouping | |
 | 3.3 | GPU temperature | Tracks MFC "GPU Intel HD Graphics 6000" (TCGC) | PASS (2026-10-25): panel 71 °C vs TCGC 71.0 in the same second; MFC "GPU Intel HD Graphics 6000" 75.0 vs TCGC 75.0 in a second capture (`qa/mfc-release-run.png`) |
-| 3.4 | Battery temperature | Matches MFC "Battery Max" | PARTIAL (2026-10-25): the keys the app reads match MFC (TBXT 37.6 = Battery Max, TB2T 34.6 = Sensor 2, `qa/mfc-release-run-dump.txt`); the app's own battery readout is not seen yet (power tab) |
+| 3.4 | Battery temperature | Matches MFC "Battery Max" | PASS (2026-10-25): panel 38 °C vs TB0T 37.7 in the same second (`qa/panel-power-tab.png`); the keys also match MFC (TBXT 37.6 = Battery Max, TB2T 34.6 = Sensor 2) |
 | 3.5 | Fan speed readout | Matches MFC fan RPM; read-only | PARTIAL (2026-10-25): SMC F0Ac 1406 vs MFC 1413 rpm a second or two apart; the app's own readout is not seen yet |
-| 3.6 | Battery: charge %, health, charging sign | Charge/discharge sign is right (T6); health is plausible | |
-| 3.7 | System / adapter power | Shows a value or hides cleanly (PSTR/PDTR, T7) | |
+| 3.6 | Battery: charge %, health, charging sign | Charge/discharge sign is right (T6); health is plausible | PARTIAL (2026-10-25): charge 99 % (6103/6162), health 86 % (6162/7150) and 480 cycles match `ioreg`. The charge/discharge sign is NOT tested: the Mac was on AC, fully charged, Amperage 0. Repeat unplugged and while charging. |
+| 3.7 | System / adapter power | Shows a value or hides cleanly (PSTR/PDTR, T7) | PASS (2026-10-25): System 11 W vs PSTR 11.1; Adapter 12 W (45 W max) vs PDTR 11.4, within the second-to-second fluctuation of the power graph |
 | 3.8 | GPU usage % | Shows a value or hides cleanly (T5, IOAccelerator "Device Utilization %") | PASS (2026-10-25): the HD 6000 driver under OCLP publishes it; panel shows GPU 2 % |
 | 3.9 | `Vorssaint --sensors` | TC0F/TC1C/TC2C `cpu-core`, TCMX `cpu-aux`, TCGC `gpu` | PASS (2026-10-25, release build) |
 
