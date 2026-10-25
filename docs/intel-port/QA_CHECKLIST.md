@@ -12,13 +12,13 @@ say why). A failing feature is **gated in `hardwareUnsupportedReason`** with a c
 |---|---|
 | Commit | `git rev-parse --short HEAD` → |
 | Build time | |
-| Bundle | `build/stage.noindex/Vorssaint.app` |
+| Bundle | `build/stage/Vorssaint.app` |
 | Date / tester | |
 
 ## 0. Run the build
 
 ```sh
-open "build/stage.noindex/Vorssaint.app"
+open "build/stage/Vorssaint.app"
 PID=$(pgrep -x Vorssaint)
 ```
 
