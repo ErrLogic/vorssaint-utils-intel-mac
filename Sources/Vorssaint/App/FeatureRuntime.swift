@@ -423,9 +423,16 @@ extension AppFeature {
     /// or when the feature depends on no hardware at all.
     var hardwareUnsupportedReason: String? {
         switch self {
+        #if arch(x86_64)
+        case .fanControl:
+            return IntelPortGate.fanControlReason
+        case .extraBrightness:
+            return IntelPortGate.extraBrightnessReason
+        #else
         case .fanControl:
             return FanControlHardware.hasControllableFan
                 ? nil : FeatureStrings.fanControl(L10n.shared.language).noFans
+        #endif
         default:
             return nil
         }

@@ -622,6 +622,16 @@ struct UpdatesView: View {
     @AppStorage(DefaultsKey.releaseNotesOnUpdate) private var showWhatsNewAfter = true
 
     var body: some View {
+        if IntelPortGate.selfUpdateSupported {
+            updatesSection
+        } else {
+            Section(l10n.s.updatesSection) {
+                SettingsCaptionText(IntelPortGate.updatesDisabledNote)
+            }
+        }
+    }
+
+    private var updatesSection: some View {
         Section(l10n.s.updatesSection) {
             Toggle(l10n.s.autoCheckToggle, isOn: $autoCheck)
                 .onChange(of: autoCheck) { _, value in

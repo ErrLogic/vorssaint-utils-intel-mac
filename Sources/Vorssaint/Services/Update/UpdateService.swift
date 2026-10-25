@@ -75,6 +75,7 @@ final class UpdateService: ObservableObject {
             }
             return
         }
+        guard IntelPortGate.selfUpdateSupported else { return }
         configureAutomaticChecks()
         if autoCheckEnabled {
             DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [weak self] in
@@ -86,7 +87,7 @@ final class UpdateService: ObservableObject {
     private func configureAutomaticChecks() {
         refreshTimer?.invalidate()
         refreshTimer = nil
-        guard autoCheckEnabled else { return }
+        guard IntelPortGate.selfUpdateSupported, autoCheckEnabled else { return }
         // Hourly (was daily). Combined with the activate / panel-open checks, a new
         // release surfaces within the hour instead of up to a day later.
         let timer = Timer(timeInterval: 60 * 60, repeats: true) { [weak self] _ in
@@ -113,6 +114,7 @@ final class UpdateService: ObservableObject {
             lastChecked = Date()
             return
         }
+        guard IntelPortGate.selfUpdateSupported else { return }
         if case .checking = state { return }
         if case .downloading = state { return }
         if case .installing = state { return }
@@ -194,7 +196,7 @@ final class UpdateService: ObservableObject {
     /// API. The hourly timer is the floor; this makes it feel immediate.
     func checkIfStale(maxAge: TimeInterval = 15 * 60) {
         if AppInfo.isDeveloperBuild { return }
-        guard autoCheckEnabled else { return }
+        guard IntelPortGate.selfUpdateSupported, autoCheckEnabled else { return }
         switch state {
         case .checking, .downloading, .installing: return
         default: break
@@ -207,7 +209,7 @@ final class UpdateService: ObservableObject {
 
     func downloadAndInstall() {
         if AppInfo.isDeveloperBuild { return }  // never replace the local dev build over itself
-        guard let downloadURL else { return }
+        guard IntelPortGate.selfUpdateSupported, let downloadURL else { return }
         // Pre-flight BEFORE spending the download: a translocated app or one
         // running from a read-only volume (the mounted DMG) can never be
         // replaced in place, so say so now instead of after the download.
