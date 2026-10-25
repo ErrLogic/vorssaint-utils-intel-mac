@@ -16,6 +16,12 @@ enum IntelPortGateTests {
                      "an arm64 build keeps its self-updater")
         #endif
 
+        #if arch(x86_64)
+        suite.expect(!IntelPortGate.hevcPreferred, "an x86_64 build records in H.264 without the HEVC probe")
+        #else
+        suite.expect(IntelPortGate.hevcPreferred, "an arm64 build keeps preferring HEVC")
+        #endif
+
         let reasons = [IntelPortGate.fanControlReason,
                        IntelPortGate.extraBrightnessReason,
                        IntelPortGate.updatesDisabledNote]
@@ -37,6 +43,23 @@ enum IntelPortGateTests {
                      "the hardware gate blocks fan control and Extra Brightness on x86_64")
         suite.expect(runtime.contains("return !available || feature.isHardwareSupported"),
                      "every install path still passes the hardware gate")
+
+        // The gate comes first in the condition, so a false answer skips the
+        // HEVC probe instead of running it and discarding the result.
+        for path in ["Sources/Vorssaint/Services/Recorder/RecorderWriter.swift",
+                     "Sources/Vorssaint/Services/Recorder/RecorderExporter.swift"] {
+            let recorder = source(path)
+            if let gate = recorder.range(of: "IntelPortGate.hevcPreferred"),
+               let probe = recorder.range(of: "hevcEncodes(width:") {
+                suite.expect(gate.lowerBound < probe.lowerBound,
+                             "\(path) checks the HEVC gate before the encoder probe")
+            } else {
+                suite.expect(false, "\(path) gates its HEVC choice")
+            }
+        }
+        let mediaDefaults = source("Sources/Vorssaint/Core/Defaults.swift")
+        suite.expect(mediaDefaults.contains("DefaultsKey.mediaVideoCodec: MediaVideoCodec.h264.rawValue"),
+                     "media tools default to H.264, so HEVC stays an explicit choice")
 
         let settings = source("Sources/Vorssaint/UI/Settings/SettingsView.swift")
         suite.expect(settings.contains("IntelPortGate.updatesDisabledNote"),

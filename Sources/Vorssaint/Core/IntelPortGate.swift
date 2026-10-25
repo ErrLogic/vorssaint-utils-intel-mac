@@ -17,6 +17,18 @@ enum IntelPortGate {
         #endif
     }
 
+    /// Whether the recorder tries HEVC before H.264. Broadwell has no HEVC
+    /// hardware encoder, so a software HEVC encode that passes the probe would
+    /// still drop frames and load the CPU during a recording. An Intel build
+    /// goes straight to H.264 and never runs the HEVC probe.
+    static var hevcPreferred: Bool {
+        #if arch(x86_64)
+        return false
+        #else
+        return true
+        #endif
+    }
+
     static let fanControlReason =
         "Fan control is not supported on Intel Macs. The fan write path is only built for Apple Silicon."
 

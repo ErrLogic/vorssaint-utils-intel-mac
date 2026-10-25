@@ -82,7 +82,8 @@ final class RecorderWriter {
                                           height: height,
                                           frameRate: frameRate,
                                           codec: .hevc)
-        let resolved = writer.canApply(outputSettings: settings, forMediaType: .video)
+        let resolved = IntelPortGate.hevcPreferred
+            && writer.canApply(outputSettings: settings, forMediaType: .video)
             && Self.hevcEncodes(width: width, height: height)
             ? settings
             : Self.videoSettings(width: width,

@@ -303,7 +303,8 @@ final class RecorderExporter {
                                                frameRate: outputFrameRate,
                                                quality: document.resolvedQuality,
                                                codec: .hevc)
-            resolved = writer.canApply(outputSettings: preferred, forMediaType: .video)
+            resolved = IntelPortGate.hevcPreferred
+                && writer.canApply(outputSettings: preferred, forMediaType: .video)
                 && RecorderWriter.hevcEncodes(width: Int(outputSize.width), height: Int(outputSize.height))
                 ? preferred
                 : Self.videoSettings(size: outputSize,
