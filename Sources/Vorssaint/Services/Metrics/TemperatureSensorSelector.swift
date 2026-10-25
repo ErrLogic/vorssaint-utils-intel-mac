@@ -12,6 +12,7 @@ enum CPUTemperaturePlatform: Equatable {
     case appleM4ProFamily
     case appleM5Family
     case unmappedAppleSilicon
+    case intel
     case generic
 }
 
@@ -70,6 +71,7 @@ enum TemperatureSensorSelector {
 
     static func platform(brandString: String?) -> CPUTemperaturePlatform {
         let brand = brandString?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if brand.hasPrefix("Intel(R)") { return .intel }
         // Preserve the established Tp/Te reading path for this supported chip
         // until a verified per-core map is available.
         if brand == "Apple A18 Pro" { return .generic }
@@ -99,6 +101,7 @@ enum TemperatureSensorSelector {
                                         platform: CPUTemperaturePlatform) -> Double? {
         let valid = readings.filter { isPlausibleTemperature($0.value) }
         guard !valid.isEmpty else { return nil }
+        if platform == .intel { return IntelSMCSensorMap.displayedCPUTemperature(valid) }
 
         let core = valid.filter { isCPUCoreKey($0.key, platform: platform) }
         if let value = core.map({ $0.value }).max() {
@@ -116,7 +119,7 @@ enum TemperatureSensorSelector {
     static func hasCPUCoreSet(platform: CPUTemperaturePlatform) -> Bool {
         switch platform {
         case .appleM1Family, .appleM2Family, .appleM3Family, .appleM4Family,
-             .appleM4ProFamily, .appleM5Family:
+             .appleM4ProFamily, .appleM5Family, .intel:
             return true
         case .unmappedAppleSilicon, .generic: return false
         }
@@ -136,6 +139,8 @@ enum TemperatureSensorSelector {
             return appleM4ProCPUCoreKeys.contains(key)
         case .appleM5Family:
             return appleM5CPUCoreKeys.contains(key)
+        case .intel:
+            return IntelSMCSensorMap.cpuCoreKeys.contains(key)
         case .unmappedAppleSilicon, .generic:
             return false
         }
@@ -143,8 +148,15 @@ enum TemperatureSensorSelector {
 
     static func isCPUTemperatureKey(_ key: String,
                                     platform: CPUTemperaturePlatform) -> Bool {
+        if platform == .intel { return IntelSMCSensorMap.isCPUKey(key) }
         if key.hasPrefix("Tp") || key.hasPrefix("Te") { return true }
         return platform == .appleM3Family && key.hasPrefix("Tf")
+    }
+
+    static func isGPUTemperatureKey(_ key: String,
+                                    platform: CPUTemperaturePlatform) -> Bool {
+        if platform == .intel { return IntelSMCSensorMap.gpuKeys.contains(key) }
+        return key.hasPrefix("Tg")
     }
 
     static func stabilizedTemperature(_ reading: Double?,

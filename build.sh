@@ -562,6 +562,7 @@ if (( TEST )); then
         Sources/Vorssaint/Services/Metrics/CPUCoreSampler.swift
         Sources/Vorssaint/Services/Metrics/MaxCapacityProbe.swift
         Sources/Vorssaint/Services/Metrics/TemperatureSensorSelector.swift
+        Sources/Vorssaint/Services/Metrics/IntelSMCSensorMap.swift
         Sources/Vorssaint/Services/Metrics/SustainedAlertGate.swift
         Sources/Vorssaint/Services/WindowLayout/WindowLayoutSupport.swift
         Sources/Vorssaint/Services/WindowLayout/WindowStageManagerSupport.swift
@@ -633,6 +634,7 @@ swiftc -O -target "$TARGET" -sdk "$SDK" "${SDK_COMPAT_FLAGS[@]}" "${BUILD_VARIAN
     Sources/Vorssaint/Services/FanControl/FanControlXPC.swift \
     Sources/Vorssaint/Services/SystemMonitor/SMCClient.swift \
     Sources/Vorssaint/Services/Metrics/TemperatureSensorSelector.swift \
+    Sources/Vorssaint/Services/Metrics/IntelSMCSensorMap.swift \
     Sources/Vorssaint/Services/FanControl/FanControlHardware.swift \
     Sources/FanControlHelper/main.swift \
     -o "build/$FAN_HELPER_ID"

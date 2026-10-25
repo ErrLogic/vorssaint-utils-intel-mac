@@ -16,6 +16,7 @@ swiftc -O -parse-as-library -target "$ARCH-apple-macosx14.0" -sdk "$(xcrun --sho
     Sources/Vorssaint/Services/SystemMonitor/SMCClient.swift \
     Sources/Vorssaint/Services/FanControl/FanControlSupport.swift \
     Sources/Vorssaint/Services/Metrics/TemperatureSensorSelector.swift \
+    Sources/Vorssaint/Services/Metrics/IntelSMCSensorMap.swift \
     -o "$OUT_DIR/smc-dump"
 
 if [[ $# -gt 0 ]]; then
